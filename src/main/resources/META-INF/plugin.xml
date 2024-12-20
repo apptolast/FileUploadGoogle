@@ -9,11 +9,12 @@
     <resource-bundle>messages.MyBundle</resource-bundle>
 
     <actions>
-        <action id="GDriveBackup.Backup"
+        <action id="com.github.coshiloco.fileuploadgoogle.actions.BackupAction"
                 class="com.github.coshiloco.fileuploadgoogle.actions.BackupAction"
                 text="Backup to Google Drive"
                 description="Backup project to Google Drive">
-            <add-to-group group-id="MainToolBar" anchor="last"/>
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
     </actions>
+
 </idea-plugin>
