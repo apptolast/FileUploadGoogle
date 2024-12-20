@@ -8,11 +8,12 @@
 
     <resource-bundle>messages.MyBundle</resource-bundle>
 
-    <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="com.github.coshiloco.fileuploadgoogle.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-    </extensions>
-
-    <applicationListeners>
-        <listener class="com.github.coshiloco.fileuploadgoogle.listeners.MyApplicationActivationListener" topic="com.intellij.openapi.application.ApplicationActivationListener"/>
-    </applicationListeners>
+    <actions>
+        <action id="GDriveBackup.Backup"
+                class="com.github.coshiloco.fileuploadgoogle.actions.BackupAction"
+                text="Backup to Google Drive"
+                description="Backup project to Google Drive">
+            <add-to-group group-id="MainToolBar" anchor="last"/>
+        </action>
+    </actions>
 </idea-plugin>
