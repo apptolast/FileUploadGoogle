@@ -103,7 +103,8 @@ class BackupAction : AnAction() {
                 if (!source.name.contains("project_scan_") &&
                     !source.name.endsWith("_copia") &&
                     !source.name.equals("build") &&
-                    !source.name.equals("out")) {
+                    !source.name.equals("out")
+                ) {
 
                     val target = File(targetDir, source.name)
 
