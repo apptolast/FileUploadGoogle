@@ -20,7 +20,7 @@ import java.io.InputStreamReader
 class GoogleDriveService(private val project: Project) {
     private val jsonFactory = GsonFactory.getDefaultInstance()
     private val scopes = listOf(DriveScopes.DRIVE_FILE)
-    private val credentialsPath = "/client_secret.json"
+    private val credentialsPath = "resources/client_secret_133280984050-657tfstbbfskvrihs3umtt1ed82d9ubv.apps.googleusercontent.com.json"
     private val tokensDirectoryPath = "tokens"
 
     private fun getCredentials(): Credential {
