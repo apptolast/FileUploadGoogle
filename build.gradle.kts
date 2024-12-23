@@ -51,7 +51,7 @@ dependencies {
     }
 
     implementation("com.google.api-client:google-api-client:1.33.0")
-    implementation("com.google.oauth-client:google-oauth-client-jetty:1.33.0")
+    implementation("com.google.oauth-client:google-oauth-client-jetty:1.37.0")
     implementation("com.google.apis:google-api-services-drive:v3-rev20220214-1.32.1")
 }
 
