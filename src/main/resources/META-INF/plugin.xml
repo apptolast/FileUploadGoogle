@@ -2,6 +2,7 @@
 <idea-plugin>
     <id>com.github.coshiloco.fileuploadgoogle</id>
     <name>FileUploadGoogle</name>
+    <version>0.0.1</version>
     <vendor>coshiloco</vendor>
 
     <depends>com.intellij.modules.platform</depends>
