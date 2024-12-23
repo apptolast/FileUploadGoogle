@@ -18,4 +18,10 @@
         </action>
     </actions>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <projectService serviceInterface="com.github.coshiloco.fileuploadgoogle.services.AutoBackupService"
+                        serviceImplementation="com.github.coshiloco.fileuploadgoogle.services.AutoBackupService"/>
+    </extensions>
+
+
 </idea-plugin>

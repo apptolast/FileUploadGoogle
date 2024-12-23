@@ -1,5 +1,6 @@
 package com.github.coshiloco.fileuploadgoogle.actions
 
+import com.github.coshiloco.fileuploadgoogle.services.AutoBackupService
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
@@ -11,6 +12,7 @@ import java.nio.file.Files
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
+import kotlin.jvm.java
 
 class BackupAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
@@ -26,6 +28,42 @@ class BackupAction : AnAction() {
             return
         }
 
+        // Obtener el servicio de backup
+        val backupService = project.getService(AutoBackupService::class.java)
+
+        // Mostrar diálogo de opciones
+        val options = arrayOf("Iniciar monitoreo automático", "Detener monitoreo", "Ejecutar backup ahora")
+        val choice = Messages.showChooseDialog(
+            project,
+            "¿Qué acción desea realizar?",
+            "Backup Automático",
+            null,
+            options,
+            options[0]
+        )
+
+        when (choice) {
+            0 -> {
+                backupService.startMonitoring()
+                Messages.showInfoMessage(
+                    "El monitoreo automático se ha iniciado.\nSe realizarán copias cada 5 minutos y cuando haya cambios significativos.",
+                    "Monitoreo Iniciado"
+                )
+            }
+            1 -> {
+                backupService.stopMonitoring()
+                Messages.showInfoMessage(
+                    "El monitoreo automático se ha detenido.",
+                    "Monitoreo Detenido"
+                )
+            }
+            2 -> executeBackup(project, basePath)
+        }
+
+
+    }
+
+    fun executeBackup(project: Project, basePath: String) {
         val projectDetails = StringBuilder()
         projectDetails.append("=== ANÁLISIS DETALLADO DEL PROYECTO ===\n")
         projectDetails.append("Fecha y hora del análisis: ${getCurrentDateTime()}\n")
