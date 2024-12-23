@@ -14,24 +14,21 @@ import com.google.api.services.drive.DriveScopes
 import com.intellij.openapi.components.Service
 import com.intellij.openapi.project.Project
 import java.io.File
-import java.io.FileInputStream
 import java.io.InputStreamReader
 
 @Service(Service.Level.PROJECT)
 class GoogleDriveService(private val project: Project) {
     private val jsonFactory = GsonFactory.getDefaultInstance()
     private val scopes = listOf(DriveScopes.DRIVE_FILE)
-    private val credentialsPath = "/client_secret.json" // Asegúrate de tener este archivo en resources
+    private val credentialsPath = "/client_secret.json"
     private val tokensDirectoryPath = "tokens"
 
     private fun getCredentials(): Credential {
-        // Cargar cliente secreto desde archivo
         val inputStream = GoogleDriveService::class.java.getResourceAsStream(credentialsPath)
             ?: throw Exception("Resource not found: $credentialsPath")
 
         val clientSecrets = GoogleClientSecrets.load(jsonFactory, InputStreamReader(inputStream))
 
-        // Construir flow y solicitar un token
         val flow = GoogleAuthorizationCodeFlow.Builder(
             GoogleNetHttpTransport.newTrustedTransport(),
             jsonFactory,
@@ -53,21 +50,47 @@ class GoogleDriveService(private val project: Project) {
         ).setApplicationName("IntelliJ Plugin Backup").build()
     }
 
-    fun uploadFile(filePath: String, parentFolderId: String? = null): String {
-        val file = File(filePath)
-        val fileMetadata = com.google.api.services.drive.model.File().apply {
-            name = file.name
-            if (parentFolderId != null) {
-                parents = listOf(parentFolderId)
-            }
+    fun findFolderByPath(path: List<String>): String? {
+        var currentParentId = "root"
+
+        for (folderName in path) {
+            currentParentId = findFolder(folderName, currentParentId) ?: return null
         }
 
-        val mediaContent = FileContent("application/octet-stream", file)
-        val uploadedFile = getDriveService().files().create(fileMetadata, mediaContent)
-            .setFields("id, name, webViewLink")
+        return currentParentId
+    }
+
+    private fun findFolder(folderName: String, parentId: String): String? {
+        val query = "'${parentId}' in parents and " +
+                "mimeType='application/vnd.google-apps.folder' and " +
+                "name='${folderName}' and " +
+                "trashed=false"
+
+        val result = getDriveService().files().list()
+            .setQ(query)
+            .setSpaces("drive")
+            .setFields("files(id, name)")
             .execute()
 
-        return uploadedFile.webViewLink
+        return result.files.firstOrNull()?.id
+    }
+
+    private fun createFolderPath(path: List<String>): String {
+        var currentParentId = "root"
+
+        for (folderName in path) {
+            currentParentId = findFolder(folderName, currentParentId)
+                ?: createFolder(folderName, currentParentId)
+        }
+
+        return currentParentId
+    }
+
+    fun uploadToSpecificFolder(directoryPath: String) {
+        val targetPath = listOf("AppToLast", "TestPlugin")
+        val targetFolderId = findFolderByPath(targetPath) ?: createFolderPath(targetPath)
+        val directory = File(directoryPath)
+        uploadDirectoryContents(directory, targetFolderId)
     }
 
     fun createFolder(folderName: String, parentFolderId: String? = null): String {
@@ -86,17 +109,21 @@ class GoogleDriveService(private val project: Project) {
         return folder.id
     }
 
-    fun uploadDirectory(directoryPath: String): String {
-        val directory = File(directoryPath)
-        val folderName = directory.name
+    private fun uploadFile(filePath: String, parentFolderId: String? = null): String {
+        val file = File(filePath)
+        val fileMetadata = com.google.api.services.drive.model.File().apply {
+            name = file.name
+            if (parentFolderId != null) {
+                parents = listOf(parentFolderId)
+            }
+        }
 
-        // Crear carpeta principal
-        val mainFolderId = createFolder(folderName)
+        val mediaContent = FileContent("application/octet-stream", file)
+        val uploadedFile = getDriveService().files().create(fileMetadata, mediaContent)
+            .setFields("id, name, webViewLink")
+            .execute()
 
-        // Subir archivos recursivamente
-        uploadDirectoryContents(directory, mainFolderId)
-
-        return mainFolderId
+        return uploadedFile.webViewLink
     }
 
     private fun uploadDirectoryContents(directory: File, parentFolderId: String) {

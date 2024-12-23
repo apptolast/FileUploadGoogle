@@ -1,6 +1,7 @@
 package com.github.coshiloco.fileuploadgoogle.actions
 
 import com.github.coshiloco.fileuploadgoogle.services.AutoBackupService
+import com.github.coshiloco.fileuploadgoogle.services.GoogleDriveService
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.project.Project
@@ -12,7 +13,6 @@ import java.nio.file.Files
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
-import kotlin.jvm.java
 
 class BackupAction : AnAction() {
     override fun actionPerformed(e: AnActionEvent) {
@@ -50,6 +50,7 @@ class BackupAction : AnAction() {
                     "Monitoreo Iniciado"
                 )
             }
+
             1 -> {
                 backupService.stopMonitoring()
                 Messages.showInfoMessage(
@@ -57,6 +58,7 @@ class BackupAction : AnAction() {
                     "Monitoreo Detenido"
                 )
             }
+
             2 -> executeBackup(project, basePath)
         }
 
@@ -108,6 +110,16 @@ class BackupAction : AnAction() {
 
             // Actualizar el mensaje del diálogo
             showSummaryDialog(project, stats, backupPath.absolutePath)
+
+            val driveService = project.getService(GoogleDriveService::class.java)
+
+            // Ahora usamos el nuevo método que sube directamente a la carpeta específica
+            driveService.uploadToSpecificFolder(backupPath.absolutePath)
+
+            Messages.showInfoMessage(
+                "El backup se ha subido correctamente a la carpeta TestPlugin en Google Drive",
+                "Subida Completada"
+            )
         } catch (e: Exception) {
             Messages.showErrorDialog(
                 project,
