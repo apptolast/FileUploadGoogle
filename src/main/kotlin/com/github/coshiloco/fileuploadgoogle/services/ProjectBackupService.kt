@@ -13,7 +13,7 @@ import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.TimeUnit
 
 @Service(Service.Level.PROJECT)
-class AutoBackupService(private val project: Project) {
+class ProjectBackupService(private val project: Project) {
     private var connection: MessageBusConnection? = null
     private var scheduler: ScheduledExecutorService? = null
     private var scheduledBackup: ScheduledFuture<*>? = null

@@ -1,6 +1,6 @@
 package com.github.coshiloco.fileuploadgoogle.actions
 
-import com.github.coshiloco.fileuploadgoogle.services.AutoBackupService
+import com.github.coshiloco.fileuploadgoogle.services.ProjectBackupService
 import com.github.coshiloco.fileuploadgoogle.services.GoogleDriveService
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
@@ -29,7 +29,7 @@ class BackupAction : AnAction() {
         }
 
         // Obtener el servicio de backup
-        val backupService = project.getService(AutoBackupService::class.java)
+        val backupService = project.getService(ProjectBackupService::class.java)
 
         // Mostrar diálogo de opciones
         val options = arrayOf("Iniciar monitoreo automático", "Detener monitoreo", "Ejecutar backup ahora")

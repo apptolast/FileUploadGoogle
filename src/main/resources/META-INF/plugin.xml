@@ -19,8 +19,8 @@
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
-        <projectService serviceInterface="com.github.coshiloco.fileuploadgoogle.services.AutoBackupService"
-                        serviceImplementation="com.github.coshiloco.fileuploadgoogle.services.AutoBackupService"/>
+        <projectService serviceInterface="com.github.coshiloco.fileuploadgoogle.services.ProjectBackupService"
+                        serviceImplementation="com.github.coshiloco.fileuploadgoogle.services.ProjectBackupService"/>
         <projectService serviceInterface="com.github.coshiloco.fileuploadgoogle.services.GoogleDriveService"
                         serviceImplementation="com.github.coshiloco.fileuploadgoogle.services.GoogleDriveService"/>
     </extensions>
