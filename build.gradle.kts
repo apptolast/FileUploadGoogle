@@ -52,7 +52,7 @@ dependencies {
 
     implementation("com.google.api-client:google-api-client:1.33.0")
     implementation("com.google.oauth-client:google-oauth-client-jetty:1.33.0")
-    implementation("com.google.apis:google-api-services-drive:v3-rev20220214-1.32.1")
+    implementation("com.google.apis:google-api-services-drive:v3-rev20250220-2.0.0")
 }
 
 // Configure IntelliJ Platform Gradle Plugin - read more: https://plugins.jetbrains.com/docs/intellij/tools-intellij-platform-gradle-plugin-extension.html
